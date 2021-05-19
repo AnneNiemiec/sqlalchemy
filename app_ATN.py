@@ -48,27 +48,39 @@ def last_year_prcp():
     myDict = {date:prcp for date,prcp in recent_data}
     return jsonify(myDict)
 
-# /api/v1.0/stations
 # Return a JSON list of stations from the dataset.
-# /api/v1.0/tobs
+@app.route("/api/v1.0/stations")
+def list_of_stations():
+    Station_number=session.query(Station.station).all()
+    Station_tuples = [item for t in Station_number for item in t]
+    return jsonify(Station_tuples)
 
-
+# Design a query to find the most active stations (i.e. what stations have the most rows?)
+# List the stations and the counts in descending order.
 # Query the dates and temperature observations of the most active station for the last year of data.
-
-
+# Return a JSON list of stations from the dataset.
 # Return a JSON list of temperature observations (TOBS) for the previous year.
-# /api/v1.0/<start> and /api/v1.0/<start>/<end>
-
+@app.route("/api/v1.0/tobs")
+def list_of_stations():
+    Station_number=session.query(Measurement.station, func.count(Measurement.station)).\
+        group_by(Measurement.station).order_by(func.count(Measurement.station).desc()).first()
+    Most_Active=Station_number[0]
+    query_date= dt.date(2017,8,23) - dt.timedelta(weeks=52)
+    active_station=session.query(Measurement.tobs).\
+        filter(Measurement.date >= query_date).filter(Measurement.station==Most_Active).all()
+    Station_tuples = [item for t in active_station for item in t]
+    return jsonify(Station_tuples)
 
 # Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
+@app.route("/api/v1.0/<start>")
+@app.route("/api/v1.0/<start>/<end>")
+def temp_observations(start,end):
+    Station_number=session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs)).filter(Measurement.station=='USC00519281').all()
+    Station_number
 
 
 # When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
-
-
 # When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates between the start and end date inclusive.
-
-# Hints
 # You will need to join the station and measurement tables for some of the queries.
 # Use Flask jsonify to convert your API data into a valid JSON response object.
 
