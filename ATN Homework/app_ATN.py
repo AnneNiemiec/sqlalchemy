@@ -14,6 +14,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 
 # create engine to hawaii.sqlite
+
 engine = create_engine("sqlite:///Resources/hawaii.sqlite")
 
 # Home page.
@@ -23,6 +24,7 @@ Base = automap_base()
 
 # reflect the tables
 Base.prepare(engine,reflect=True)
+
 
 # View all of the classes that automap found
 Base.classes.keys()
@@ -50,7 +52,7 @@ def last_year_prcp():
 
 # Return a JSON list of stations from the dataset.
 @app.route("/api/v1.0/stations")
-def list_of_stations():
+def stations():
     Station_number=session.query(Station.station).all()
     Station_tuples = [item for t in Station_number for item in t]
     return jsonify(Station_tuples)
@@ -72,17 +74,28 @@ def list_of_stations():
     return jsonify(Station_tuples)
 
 # Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
-@app.route("/api/v1.0/<start>")
-@app.route("/api/v1.0/<start>/<end>")
-def temp_observations(start,end):
-    Station_number=session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs)).filter(Measurement.station=='USC00519281').all()
-    Station_number
-
-
 # When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
 # When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates between the start and end date inclusive.
 # You will need to join the station and measurement tables for some of the queries.
 # Use Flask jsonify to convert your API data into a valid JSON response object.
+
+@app.route("/api/v1.0/<start>")
+@app.route("/api/v1.0/<start>/<end>")
+def temp_observations(start,end=None):
+    if end == None:
+        Station_number=session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs)).\
+            filter(Measurement.date >= start).all()
+    else:
+        Station_number=session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs)).\
+            filter(Measurement.date >= start).filter(Measurement.date<=end).all()
+    Station_tuples = [item for t in Station_number for item in t]
+    return jsonify(Station_tuples)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+    
+
 
 
 
