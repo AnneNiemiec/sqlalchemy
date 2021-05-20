@@ -1,3 +1,10 @@
+Anne Niemiec
+Homework Assignment (Climate.ipynb):  sqlalchemy-challenge/ATN Homework folder, climate_ATN.ipynb file
+Homework Assignment (app.py):  sqlalchemy-challenge/ATN Homework folder, app_ATN.py file
+Homework Assignment (Read Me):  sqlalchemy-challenge/ATN Homework folder, ReadMe_ATN.md
+
+Worked closely with tutor on assignment.
+
 # SQLAlchemy Homework - Surfs Up!
 
 ### Before You Begin

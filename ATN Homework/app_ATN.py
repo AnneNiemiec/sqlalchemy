@@ -14,17 +14,14 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 
 # create engine to hawaii.sqlite
-
 engine = create_engine("sqlite:///Resources/hawaii.sqlite")
 
-# Home page.
 # List all routes that are available.
 # reflect an existing database into a new model
 Base = automap_base()
 
 # reflect the tables
 Base.prepare(engine,reflect=True)
-
 
 # View all of the classes that automap found
 Base.classes.keys()
@@ -78,7 +75,6 @@ def list_of_stations():
 # When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates between the start and end date inclusive.
 # You will need to join the station and measurement tables for some of the queries.
 # Use Flask jsonify to convert your API data into a valid JSON response object.
-
 @app.route("/api/v1.0/<start>")
 @app.route("/api/v1.0/<start>/<end>")
 def temp_observations(start,end=None):
