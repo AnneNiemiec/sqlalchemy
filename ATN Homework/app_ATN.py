@@ -12,9 +12,17 @@ import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
+import os
+
+# See Current Path
+print(os.getcwd())
+database_path = "./ATN Homework/Resources/hawaii.sqlite"
 
 # create engine to hawaii.sqlite
-engine = create_engine("sqlite:///Resources/hawaii.sqlite")
+engine = create_engine(f'sqlite:///{database_path}')
+
+# create engine to hawaii.sqlite
+# engine = create_engine(f'sqlite:///{database_path}')
 
 # List all routes that are available.
 # reflect an existing database into a new model
@@ -36,6 +44,17 @@ session=Session(engine)
 # Create an app, being sure to pass __name__
 app = Flask(__name__)
 
+@app.route("/")
+def welcome():
+    """List all available api routes."""
+    return (
+        f"Available Routes:<br/>"
+        f"/api/v1.0/precipitation<br/>"
+        f"/api/v1.0/tobs<br/>"
+        f"/api/v1.0/stations<br/>"
+        f"/api/v1.0/<start><br/>"
+        f"/api/v1.0/<start>/<end>")
+
 # Define what to do when a user hits the index route
 @app.route("/api/v1.0/precipitation")
 
@@ -52,6 +71,7 @@ def last_year_prcp():
 def stations():
     Station_number=session.query(Station.station).all()
     Station_tuples = [item for t in Station_number for item in t]
+    # print(Station_tuples)
     return jsonify(Station_tuples)
 
 # Design a query to find the most active stations (i.e. what stations have the most rows?)
